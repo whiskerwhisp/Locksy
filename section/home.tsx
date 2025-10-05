@@ -18,7 +18,7 @@ const Home = () => {
                 </div>
 
                 <div className="p-6">
-                    <h1 className="text-xl font-bold text-center border-b pb-2 mb-4">Locksy</h1>
+                    <h1 className="text-xl font-bold text-center border-b pb-2 mb-4">The Password Generator</h1>
                     <div className="space-y-3">
                         <div className="flex items-center justify-between">
                             <span>Password Length:</span>
