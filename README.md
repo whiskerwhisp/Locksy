@@ -1,36 +1,168 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Locksy - Privacy-First Password Manager
+
+A secure, client-side encrypted password manager built with Next.js, TypeScript, and MongoDB.
+
+## Features
+
+- 🔐 **Client-Side Encryption**: All vault data is encrypted on the client using AES-256 before being sent to the server
+- 🔑 **Password Generator**: Generate strong passwords with customizable options (length, character sets, exclude look-alikes)
+- 💾 **Secure Vault**: Store passwords, usernames, URLs, and notes securely
+- 🔍 **Search & Filter**: Quickly find your saved items
+- 📋 **Copy to Clipboard**: Auto-clearing clipboard after 15 seconds
+- 🔒 **Privacy First**: Server never sees plaintext passwords or vault data
+- 🎨 **Clean UI**: Minimal and fast interface
+
+## Tech Stack
+
+- **Frontend**: Next.js 15 with TypeScript
+- **Backend**: Next.js API Routes
+- **Database**: MongoDB
+- **Encryption**: crypto-js (AES-256)
+- **Authentication**: JWT with httpOnly cookies
+- **UI Components**: Custom components with Tailwind CSS
+
+## Encryption Details
+
+**Library Used**: crypto-js (AES encryption)
+
+**Why crypto-js**:
+1. Battle-tested and widely used for client-side encryption
+2. Provides AES-256 encryption which is industry standard
+3. PBKDF2 key derivation with 10,000 iterations for secure key generation
+4. All encryption/decryption happens client-side - server only stores encrypted blobs
+
+**How it works**:
+- User's password + email salt → PBKDF2 → Encryption Key (client-side only)
+- Vault data → AES-256 encrypt with key → Encrypted blob sent to server
+- Server stores only the encrypted blob, never has access to the encryption key
+- On retrieval: Encrypted blob → AES-256 decrypt with key → Plaintext (client-side only)
 
 ## Getting Started
 
-First, run the development server:
+### Prerequisites
 
+- Node.js 18+ and npm
+- MongoDB database (local or Atlas)
+
+### Installation
+
+1. Clone the repository:
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+git clone <repository-url>
+cd locksy
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+2. Install dependencies:
+```bash
+npm install
+```
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+3. Set up environment variables:
+```bash
+cp .env.example .env.local
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+Edit `.env.local` and add your MongoDB connection string and JWT secret:
+```env
+MONGODB_URI=mongodb+srv://username:password@cluster.mongodb.net/locksy?retryWrites=true&w=majority
+JWT_SECRET=your-super-secret-jwt-key-change-this-in-production
+NODE_ENV=development
+```
 
-## Learn More
+4. Run the development server:
+```bash
+npm run dev
+```
 
-To learn more about Next.js, take a look at the following resources:
+5. Open [http://localhost:3000](http://localhost:3000) in your browser
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Usage
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+1. **Sign Up**: Create an account with email and password (8+ characters)
+2. **Login**: Access your vault with credentials
+3. **Generate Password**: Use the password generator on the home page
+4. **Add Items**: Click "Add Item" in the vault to save passwords
+5. **Search**: Use the search bar to filter vault items
+6. **Copy**: Click copy icons to copy usernames/passwords (auto-clears after 15s)
+7. **Edit/Delete**: Manage your vault items with edit and delete buttons
 
-## Deploy on Vercel
+## Security Features
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+- ✅ Client-side AES-256 encryption
+- ✅ PBKDF2 key derivation (10,000 iterations)
+- ✅ Bcrypt password hashing on server
+- ✅ HttpOnly cookies for session management
+- ✅ JWT authentication with expiration
+- ✅ No plaintext passwords in database or logs
+- ✅ Auto-clearing clipboard
+- ✅ Session-based encryption key storage
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## Development
+
+```bash
+# Run development server
+npm run dev
+
+# Build for production
+npm run build
+
+# Start production server
+npm start
+
+# Lint code
+npm run lint
+```
+
+## Deployment
+
+### Vercel (Recommended)
+
+1. Push your code to GitHub
+2. Import project in Vercel
+3. Add environment variables in Vercel dashboard
+4. Deploy
+
+### MongoDB Atlas Setup
+
+1. Create account at [MongoDB Atlas](https://www.mongodb.com/cloud/atlas)
+2. Create a new cluster
+3. Get connection string
+4. Add to `.env.local` or Vercel environment variables
+
+## Project Structure
+
+```
+locksy/
+├── app/
+│   ├── api/
+│   │   ├── auth/         # Authentication endpoints
+│   │   └── vault/        # Vault CRUD endpoints
+│   ├── login/            # Login page
+│   ├── signup/           # Signup page
+│   └── vault/            # Protected vault page
+├── components/
+│   ├── ui/               # Reusable UI components
+│   ├── login-form.tsx
+│   ├── signup-form.tsx
+│   └── vault-dashboard.tsx
+├── lib/
+│   ├── auth.ts           # JWT auth utilities
+│   ├── encryption.ts     # Client-side encryption
+│   ├── mongodb.ts        # Database connection
+│   ├── password-generator.ts
+│   └── utils.ts
+├── models/
+│   ├── User.ts           # User model
+│   └── VaultItem.ts      # Vault item model
+└── section/
+    ├── home.tsx          # Password generator
+    └── navbar.tsx        # Navigation
+```
+
+## License
+
+MIT
+
+## Contributing
+
+Pull requests are welcome! For major changes, please open an issue first.
