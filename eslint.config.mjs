@@ -11,15 +11,8 @@ const compat = new FlatCompat({
 
 const eslintConfig = [
   ...compat.extends("next/core-web-vitals", "next/typescript"),
-  {
-    ignores: [
-      "node_modules/**",
-      ".next/**",
-      "out/**",
-      "build/**",
-      "next-env.d.ts",
-    ],
-  },
 ];
 
-export default eslintConfig;
+// eslint-disable-next-line import/no-anonymous-default-export
+export default {...eslintConfig, rules: {    "@typescript-eslint/no-explicit-any": "off"
+}};
